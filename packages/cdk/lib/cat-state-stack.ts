@@ -1,21 +1,21 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
-import { DatabaseStack } from './stacks/database-stack';
-import { EventBusStack } from './stacks/event-bus-stack';
+import { Database } from './constructs/database';
+import { CatEventBus } from './constructs/cat-event-bus';
 
 export class CatStateStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const database = new DatabaseStack(this, 'Database');
-    const eventBus = new EventBusStack(this, 'EventBus');
+    const database = new Database(this, 'Database');
+    const catEventBus = new CatEventBus(this, 'CatEventBus');
 
     new cdk.CfnOutput(this, 'CatStateTableName', {
       value: database.catStateTable.tableName,
     });
 
     new cdk.CfnOutput(this, 'CatEventBusName', {
-      value: eventBus.catEventBus.eventBusName,
+      value: catEventBus.eventBus.eventBusName,
     });
   }
 }
