@@ -17,7 +17,6 @@ export type CatLocation =
   | 'cat_tower'
   | 'bed'
   | 'food_area'
-  | 'sofa'
   | 'window'
   | 'hiding_spot';
 
