@@ -10,10 +10,15 @@ export type BrightnessLevel = 'dark' | 'dim' | 'bright' | 'sunny';
 // 温度レベル
 export type TemperatureLevel = 'cold' | 'cool' | 'comfortable' | 'warm' | 'hot';
 
+// 食事の有無
+export type FoodLevel = 'available' | 'empty';
+
 // 外部環境：猫の状態に影響を与える世界の状態
 export type WorldState = {
   readonly timeOfDay: TimeOfDay;
   readonly ambientNoise: AmbientNoise;
   readonly brightness: BrightnessLevel;
   readonly temperature: TemperatureLevel;
+  readonly foodLevel: FoodLevel;
+  readonly isOwnerPresent: boolean;
 };
