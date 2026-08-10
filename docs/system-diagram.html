@@ -1,0 +1,421 @@
+<title>The Manifest Cat — システム構成図</title>
+<style>
+  :root {
+    --bg: #0D1117;
+    --bg-surface: #161B27;
+    --bg-card: #1C2333;
+    --border: #30363D;
+    --text-primary: #E6EDF3;
+    --text-muted: #7D8590;
+    --text-subtle: #484F58;
+    --done: #10B981;
+    --done-bg: #052E16;
+    --done-border: #059669;
+    --wip: #F59E0B;
+    --wip-bg: #1C1200;
+    --wip-border: #D97706;
+    --todo-text: #7D8590;
+    --todo-bg: #161B27;
+    --todo-border: #30363D;
+    --device: #A78BFA;
+    --device-bg: #1A0D2E;
+    --device-border: #6D28D9;
+    --storage: #60A5FA;
+    --storage-bg: #0C1A3A;
+    --storage-border: #2563EB;
+    --link: #58A6FF;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #F6F8FA;
+      --bg-surface: #FFFFFF;
+      --bg-card: #F0F6FF;
+      --border: #D0D7DE;
+      --text-primary: #1F2328;
+      --text-muted: #57606A;
+      --text-subtle: #8C959F;
+      --done-bg: #DAFBE1;
+      --done-border: #2DA44E;
+      --wip-bg: #FFF8C5;
+      --wip-border: #D4A72C;
+      --todo-text: #57606A;
+      --todo-bg: #F6F8FA;
+      --todo-border: #D0D7DE;
+      --device-bg: #F5F0FF;
+      --device-border: #8250DF;
+      --storage-bg: #DDF4FF;
+      --storage-border: #0969DA;
+      --link: #0969DA;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0D1117;
+    --bg-surface: #161B27;
+    --bg-card: #1C2333;
+    --border: #30363D;
+    --text-primary: #E6EDF3;
+    --text-muted: #7D8590;
+    --text-subtle: #484F58;
+    --done: #10B981;
+    --done-bg: #052E16;
+    --done-border: #059669;
+    --wip: #F59E0B;
+    --wip-bg: #1C1200;
+    --wip-border: #D97706;
+    --todo-text: #7D8590;
+    --todo-bg: #161B27;
+    --todo-border: #30363D;
+    --device: #A78BFA;
+    --device-bg: #1A0D2E;
+    --device-border: #6D28D9;
+    --storage: #60A5FA;
+    --storage-bg: #0C1A3A;
+    --storage-border: #2563EB;
+    --link: #58A6FF;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #F6F8FA;
+    --bg-surface: #FFFFFF;
+    --bg-card: #F0F6FF;
+    --border: #D0D7DE;
+    --text-primary: #1F2328;
+    --text-muted: #57606A;
+    --text-subtle: #8C959F;
+    --done-bg: #DAFBE1;
+    --done-border: #2DA44E;
+    --wip-bg: #FFF8C5;
+    --wip-border: #D4A72C;
+    --todo-text: #57606A;
+    --todo-bg: #F6F8FA;
+    --todo-border: #D0D7DE;
+    --device-bg: #F5F0FF;
+    --device-border: #8250DF;
+    --storage-bg: #DDF4FF;
+    --storage-border: #0969DA;
+    --link: #0969DA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 32px 24px 64px;
+    min-height: 100vh;
+  }
+
+  header {
+    max-width: 900px;
+    margin: 0 auto 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  .eyebrow {
+    font-family: 'Courier New', 'Fira Code', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Courier New', 'Fira Code', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* 凡例 */
+  .legend {
+    max-width: 900px;
+    margin: 0 auto 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .legend-label {
+    font-size: 11px;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 4px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .badge.done   { background: var(--done-bg);    border-color: var(--done-border);   color: var(--done);    }
+  .badge.done   .badge-dot { background: var(--done); }
+  .badge.wip    { background: var(--wip-bg);     border-color: var(--wip-border);    color: var(--wip);     }
+  .badge.wip    .badge-dot { background: var(--wip); }
+  .badge.todo   { background: var(--todo-bg);    border-color: var(--todo-border);   color: var(--todo-text); }
+  .badge.todo   .badge-dot { background: var(--todo-text); }
+  .badge.device { background: var(--device-bg);  border-color: var(--device-border); color: var(--device);  }
+  .badge.device .badge-dot { background: var(--device); }
+  .badge.storage{ background: var(--storage-bg); border-color: var(--storage-border);color: var(--storage); }
+  .badge.storage .badge-dot { background: var(--storage); }
+
+  /* Mermaidコンテナ */
+  .diagram-container {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+
+  /* コンポーネント一覧テーブル */
+  .table-section {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 12px;
+  }
+
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .comp-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .comp-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: top;
+  }
+
+  .comp-table tr:last-child td { border-bottom: none; }
+
+  .comp-table tr:hover td { background: var(--bg-card); }
+
+  .status-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .chip-done   { background: var(--done-bg);    color: var(--done);    border: 1px solid var(--done-border); }
+  .chip-wip    { background: var(--wip-bg);     color: var(--wip);     border: 1px solid var(--wip-border); }
+  .chip-todo   { background: var(--todo-bg);    color: var(--todo-text); border: 1px solid var(--todo-border); }
+  .chip-device { background: var(--device-bg);  color: var(--device);  border: 1px solid var(--device-border); }
+  .chip-storage{ background: var(--storage-bg); color: var(--storage); border: 1px solid var(--storage-border); }
+
+  .issue-link {
+    color: var(--link);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .role-text { color: var(--text-muted); font-size: 12px; }
+
+  /* mermaid テーマ上書き */
+  .mermaid { font-family: system-ui, sans-serif; }
+</style>
+
+<header>
+  <div class="eyebrow">The Manifest Cat</div>
+  <h1>システム構成図</h1>
+  <div class="subtitle">猫の状態を Single Source of Truth として、すべてのイベントを駆動する設計</div>
+</header>
+
+<div class="legend">
+  <span class="legend-label">凡例</span>
+  <span class="badge done"><span class="badge-dot"></span>実装済み</span>
+  <span class="badge wip"><span class="badge-dot"></span>実装中（#7）</span>
+  <span class="badge todo"><span class="badge-dot"></span>未実装</span>
+  <span class="badge storage"><span class="badge-dot"></span>ストレージ</span>
+  <span class="badge device"><span class="badge-dot"></span>IoTデバイス</span>
+</div>
+
+<div class="diagram-container">
+  <pre class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1C2333', 'primaryTextColor': '#E6EDF3', 'primaryBorderColor': '#30363D', 'lineColor': '#484F58', 'secondaryColor': '#161B27', 'tertiaryColor': '#0D1117', 'edgeLabelBackground': '#161B27', 'fontSize': '13px'}}}%%
+graph TB
+  classDef done    fill:#052E16,stroke:#10B981,color:#6EE7B7,font-weight:600
+  classDef wip     fill:#1C1200,stroke:#F59E0B,color:#FCD34D,font-weight:600
+  classDef todo    fill:#161B27,stroke:#374151,color:#6B7280
+  classDef storage fill:#0C1A3A,stroke:#2563EB,color:#93C5FD,font-weight:600
+  classDef device  fill:#1A0D2E,stroke:#6D28D9,color:#C4B5FD
+
+  subgraph INPUT["入力層"]
+    SCHED["⏰ EventBridge Scheduler\n15分ごとに Tick 発火"]:::done
+    PIR["👁 PIR センサー\n人感検知"]:::device
+    WEIGHT["⚖️ 重量センサー\n食料レベル"]:::device
+  end
+
+  subgraph CORE["処理コア"]
+    EB(["📨 EventBridge\ncat-event-bus"]):::done
+    SHADOW["👻 Device Shadow\nWorldState キャッシュ"]:::todo
+    SH["⚙️ Scheduler Handler\n#7 実装中"]:::wip
+    EH["⚙️ External Event Handler\n#9"]:::todo
+    CD["🧠 Cat Decision\n#11–16"]:::todo
+    DB[("🗄️ DynamoDB\nCatState — 唯一の真実")]:::storage
+    ED["📡 Event Dispatcher\n#17"]:::todo
+  end
+
+  subgraph OUTPUT["出力層"]
+    IOT["📶 IoT Core\n#18"]:::todo
+    SP["🔊 スピーカー\n鳴き声 / ゴロゴロ"]:::device
+    SERVO["🔧 サーボ\nご飯を減らす"]:::device
+    LED["💡 LED\nムード演出"]:::device
+  end
+
+  SCHED -->|"Tick Event"| EB
+  PIR -->|"人感データ"| IOT
+  WEIGHT -->|"食料データ"| IOT
+  IOT -->|"Shadow 更新"| SHADOW
+  IOT -->|"External Event"| EB
+  EB -->|"Tick"| SH
+  EB -->|"External"| EH
+  SH -->|"invoke"| CD
+  EH -->|"invoke"| CD
+  SHADOW -->|"WorldState"| CD
+  CD -->|"状態更新"| DB
+  DB -->|"CatState 読み込み"| CD
+  CD -->|"Cat Event"| EB
+  EB --> ED
+  ED --> IOT
+  IOT --> SP
+  IOT --> SERVO
+  IOT --> LED
+  </pre>
+</div>
+
+<div class="table-section">
+  <div class="section-title">コンポーネント一覧</div>
+  <div style="overflow-x:auto">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>コンポーネント</th>
+          <th>役割</th>
+          <th>状態</th>
+          <th>Issue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>EventBridge Scheduler</strong></td>
+          <td class="role-text">15分ごとに Tick イベントを発行する</td>
+          <td><span class="status-chip chip-done">✅ 完了</span></td>
+          <td><span class="issue-link">#6</span></td>
+        </tr>
+        <tr>
+          <td><strong>EventBridge (cat-event-bus)</strong></td>
+          <td class="role-text">全コンポーネントを疎結合にするイベントバス</td>
+          <td><span class="status-chip chip-done">✅ 完了</span></td>
+          <td><span class="issue-link">#6</span></td>
+        </tr>
+        <tr>
+          <td><strong>DynamoDB</strong></td>
+          <td class="role-text">CatState の Single Source of Truth</td>
+          <td><span class="status-chip chip-storage">✅ 完了</span></td>
+          <td><span class="issue-link">#5</span></td>
+        </tr>
+        <tr>
+          <td><strong>Scheduler Handler</strong></td>
+          <td class="role-text">Tick を受信し Cat Decision を起動する</td>
+          <td><span class="status-chip chip-wip">🔄 実装中</span></td>
+          <td><span class="issue-link">#7</span></td>
+        </tr>
+        <tr>
+          <td><strong>Device Shadow</strong></td>
+          <td class="role-text">IoT センサーの最新値を保持（WorldState の源泉）</td>
+          <td><span class="status-chip chip-todo">未実装</span></td>
+          <td><span class="issue-link">#8</span></td>
+        </tr>
+        <tr>
+          <td><strong>External Event Handler</strong></td>
+          <td class="role-text">IoT 入力を受信し Cat Decision を起動する</td>
+          <td><span class="status-chip chip-todo">未実装</span></td>
+          <td><span class="issue-link">#9</span></td>
+        </tr>
+        <tr>
+          <td><strong>Cat Decision</strong></td>
+          <td class="role-text">CatState を更新し、Cat Event を生成する（脳）</td>
+          <td><span class="status-chip chip-todo">未実装</span></td>
+          <td><span class="issue-link">#11–16</span></td>
+        </tr>
+        <tr>
+          <td><strong>Event Dispatcher</strong></td>
+          <td class="role-text">Cat Event を各サービス（IoT/LINE/AI）へ配信する</td>
+          <td><span class="status-chip chip-todo">未実装</span></td>
+          <td><span class="issue-link">#17</span></td>
+        </tr>
+        <tr>
+          <td><strong>IoT Core</strong></td>
+          <td class="role-text">MQTT 経由でデバイスへ通知・センサーからデータ受信</td>
+          <td><span class="status-chip chip-todo">未実装</span></td>
+          <td><span class="issue-link">#18</span></td>
+        </tr>
+        <tr>
+          <td><strong>スピーカー / サーボ / LED</strong></td>
+          <td class="role-text">猫の状態を物理空間に顕現させる出力デバイス</td>
+          <td><span class="status-chip chip-device">IoT デバイス</span></td>
+          <td><span class="issue-link">#19–21</span></td>
+        </tr>
+        <tr>
+          <td><strong>PIR センサー / 重量センサー</strong></td>
+          <td class="role-text">人感・食料レベルを検知し WorldState を更新する</td>
+          <td><span class="status-chip chip-device">IoT デバイス</span></td>
+          <td><span class="issue-link">#8</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
