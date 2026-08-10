@@ -1,4 +1,12 @@
 <title>The Manifest Cat — システム構成図</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.mermaid) {
+      mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    }
+  });
+</script>
 <style>
   :root {
     --bg: #0D1117;
@@ -284,55 +292,53 @@
 
 <div class="diagram-container">
   <pre class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1C2333', 'primaryTextColor': '#E6EDF3', 'primaryBorderColor': '#30363D', 'lineColor': '#484F58', 'secondaryColor': '#161B27', 'tertiaryColor': '#0D1117', 'edgeLabelBackground': '#161B27', 'fontSize': '13px'}}}%%
 graph TB
-  classDef done    fill:#052E16,stroke:#10B981,color:#6EE7B7,font-weight:600
-  classDef wip     fill:#1C1200,stroke:#F59E0B,color:#FCD34D,font-weight:600
-  classDef todo    fill:#161B27,stroke:#374151,color:#6B7280
-  classDef storage fill:#0C1A3A,stroke:#2563EB,color:#93C5FD,font-weight:600
-  classDef device  fill:#1A0D2E,stroke:#6D28D9,color:#C4B5FD
+  classDef done fill:#052E16,stroke:#10B981,color:#6EE7B7,font-weight:bold
+  classDef wip fill:#1C1200,stroke:#F59E0B,color:#FCD34D,font-weight:bold
+  classDef todo fill:#1a1a2e,stroke:#374151,color:#6B7280
+  classDef db fill:#0C1A3A,stroke:#2563EB,color:#93C5FD,font-weight:bold
+  classDef dev fill:#1A0D2E,stroke:#6D28D9,color:#C4B5FD
 
-  subgraph INPUT["入力層"]
-    SCHED["⏰ EventBridge Scheduler\n15分ごとに Tick 発火"]:::done
-    PIR["👁 PIR センサー\n人感検知"]:::device
-    WEIGHT["⚖️ 重量センサー\n食料レベル"]:::device
-  end
+  SCHED[EventBridge Scheduler]
+  EB([EventBridge / cat-event-bus])
+  SH[Scheduler Handler]
+  EH[External Event Handler]
+  CD[Cat Decision]
+  ED[Event Dispatcher]
+  DB[(DynamoDB)]
+  SHADOW[Device Shadow]
+  IOTIN[IoT Core]
+  IOTOUT[IoT Core]
+  PIR[PIR センサー]
+  WGT[重量センサー]
+  SP[スピーカー]
+  SVO[サーボ]
+  LED[LED]
 
-  subgraph CORE["処理コア"]
-    EB(["📨 EventBridge\ncat-event-bus"]):::done
-    SHADOW["👻 Device Shadow\nWorldState キャッシュ"]:::todo
-    SH["⚙️ Scheduler Handler\n#7 実装中"]:::wip
-    EH["⚙️ External Event Handler\n#9"]:::todo
-    CD["🧠 Cat Decision\n#11–16"]:::todo
-    DB[("🗄️ DynamoDB\nCatState — 唯一の真実")]:::storage
-    ED["📡 Event Dispatcher\n#17"]:::todo
-  end
+  class SCHED,EB done
+  class SH wip
+  class EH,CD,ED,SHADOW,IOTIN,IOTOUT todo
+  class DB db
+  class PIR,WGT,SP,SVO,LED dev
 
-  subgraph OUTPUT["出力層"]
-    IOT["📶 IoT Core\n#18"]:::todo
-    SP["🔊 スピーカー\n鳴き声 / ゴロゴロ"]:::device
-    SERVO["🔧 サーボ\nご飯を減らす"]:::device
-    LED["💡 LED\nムード演出"]:::device
-  end
-
-  SCHED -->|"Tick Event"| EB
-  PIR -->|"人感データ"| IOT
-  WEIGHT -->|"食料データ"| IOT
-  IOT -->|"Shadow 更新"| SHADOW
-  IOT -->|"External Event"| EB
-  EB -->|"Tick"| SH
-  EB -->|"External"| EH
-  SH -->|"invoke"| CD
-  EH -->|"invoke"| CD
-  SHADOW -->|"WorldState"| CD
-  CD -->|"状態更新"| DB
-  DB -->|"CatState 読み込み"| CD
-  CD -->|"Cat Event"| EB
+  SCHED -->|Tick Event| EB
+  PIR --> IOTIN
+  WGT --> IOTIN
+  IOTIN -->|Shadow更新| SHADOW
+  IOTIN -->|External Event| EB
+  EB -->|Tick| SH
+  EB -->|External| EH
+  SH -->|invoke| CD
+  EH -->|invoke| CD
+  SHADOW -->|WorldState| CD
+  CD -->|状態更新| DB
+  DB -->|CatState| CD
+  CD -->|Cat Event| EB
   EB --> ED
-  ED --> IOT
-  IOT --> SP
-  IOT --> SERVO
-  IOT --> LED
+  ED --> IOTOUT
+  IOTOUT --> SP
+  IOTOUT --> SVO
+  IOTOUT --> LED
   </pre>
 </div>
 
