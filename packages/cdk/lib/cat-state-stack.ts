@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { Database } from './constructs/database';
 import { CatEventBus } from './constructs/cat-event-bus';
 import { Scheduler } from './constructs/scheduler';
+import { SchedulerHandler } from './constructs/scheduler-handler';
 
 export class CatStateStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -11,6 +12,7 @@ export class CatStateStack extends cdk.Stack {
     const database = new Database(this, 'Database');
     const catEventBus = new CatEventBus(this, 'CatEventBus');
     new Scheduler(this, 'Scheduler', { eventBus: catEventBus.eventBus });
+    new SchedulerHandler(this, 'SchedulerHandler', { eventBus: catEventBus.eventBus });
 
     new cdk.CfnOutput(this, 'CatStateTableName', {
       value: database.catStateTable.tableName,

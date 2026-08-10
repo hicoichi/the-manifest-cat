@@ -1,0 +1,10 @@
+{
+  "name": "the-manifest-cat",
+  "private": true,
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
